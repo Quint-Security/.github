@@ -59,27 +59,16 @@ Then proxy an MCP server through Quint:
 
 ## Setup
 
-### 1. Git Clone Shortcut
-
-Add the Quint URL alias so you can clone any org repo with `git clone @quint/<repo>`:
-
-```bash
-git config --global url."git@github.com:Quint-Security/".insteadOf "@quint/"
+ ## Git Setup                                                                                                                                                                                                     
+                                                                                                                                                                                                                   
+  ### 1. Git Config (`~/.gitconfig`)                                                                                                                                                                              
+                                                                                                                                                                                                                   
+  ```gitconfig                                                                                                                                                                                                     
+[url "git@github.com:Quint-Security/"]
+        insteadOf = quint:
 ```
 
-Then clone this repo:
+  4. Clone
 
-```bash
-git clone @quint/skills
-```
-
-### 2. Install Skills Locally
-
-Symlink all skills into Claude Code so they're available as slash commands (e.g. `/golang-expert`):
-
-```bash
-make skills.inject
-```
-
-Symlinks stay in sync with the repo — `git pull` automatically updates your local commands. You only need to re-run this after new skills are added.
+  `git clone quint:{repo}`
 

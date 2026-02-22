@@ -1,74 +1,48 @@
-# Quint Security
+# Quint
 
-Local security proxy for AI agent tool calls — control what agents can do, prove what they did.
+**Control what AI agents can do. Prove what they did.**
 
-## The Problem
-
-AI agents (Claude Code, Cursor, Codex) call tools with no granular permissions, no audit trail, and no way to prove a human authorized a specific action. As agents go autonomous, this is a real security gap.
-
-## What Quint Does
-
-Quint sits between AI agents and their MCP tool servers, intercepting every JSON-RPC message in the pipe:
+AI agents call tools with no permissions, no audit trail, and no accountability. Quint fixes that — one config line, zero agent changes.
 
 ```
-AI Agent  →  Quint Proxy  →  Real MCP Server
-                ↑
-          Parse every message
-          Check policy (allow/deny)
-          Sign with Ed25519
-          Log to SQLite
+AI Agent  →  Quint  →  MCP Server
+               ↑
+         enforce policy
+         sign every action
+         log to tamper-evident chain
 ```
 
-- **One config line change** to enable — agents don't know Quint exists
-- **Allow/deny policy** per server, per tool, with glob patterns (`Mechanic*`, `write_*`)
-- **Cryptographic audit trail** — every action signed with Ed25519, hash-chained, tamper-evident
-- **Independently verifiable** — hand someone the log and they can prove what happened
-
-## Repos
-
-| Repo | What | Language |
-|------|------|----------|
-| [quint-cli](https://github.com/Quint-Security/quint-cli) | CLI tools — proxy, audit log viewer, signature verification, policy management | TypeScript |
-| [quint-proto](https://github.com/Quint-Security/quint-proto) | Protobuf schema definitions — shared contract between all components | Protobuf |
-| [quint-proxy](https://github.com/Quint-Security/quint-proxy) | Core proxy daemon (WIP) | Go |
-
-## Quick Start
+## Install
 
 ```bash
-git clone https://github.com/Quint-Security/quint-cli.git
-cd quint-cli
-npm install && npm run build && npm link
-
-quint keys generate
-quint policy init
-quint status
+npm install -g @quint-security/cli
+quint keys generate && quint policy init
 ```
 
-Then proxy an MCP server through Quint:
+Then wrap any MCP server:
 
 ```json
 { "command": "quint", "args": ["proxy", "--name", "my-server", "--", "my-mcp-server"] }
 ```
 
+The agent doesn't know Quint exists. Every tool call is now policy-checked, signed, and logged.
+
+## What you get
+
+- **Allow/deny policy** per server, per tool, with glob patterns (`write_*`, `Mechanic*`)
+- **Cryptographic audit trail** — every action signed with Ed25519, hash-chained in SQLite
+- **Independent verification** — export the log, hand it to anyone, they can verify what happened
+- **Fail-closed** — no policy match means deny
+
+## Repos
+
+- **[cli](https://github.com/Quint-Security/cli)** — proxy, audit log viewer, key management, policy engine (TypeScript)
+- **[proto](https://github.com/Quint-Security/proto)** — protobuf schema definitions shared across components
+
 ## Architecture
 
-- **2 runtime dependencies** — `better-sqlite3` + `commander`
-- **Zero external crypto** — Ed25519 and SHA-256 via Node.js built-in `node:crypto`
-- **Fail-closed** — no policy match = deny
-- **Provider-neutral** — works with any MCP-compatible agent
+Two runtime dependencies: `better-sqlite3` + `commander`. Crypto is `node:crypto` built-in (Ed25519 + SHA-256). Works with any MCP-compatible agent — Claude Code, Cursor, Cline, Codex.
 
-## Setup
+## Links
 
- ## Git Setup                                                                                                                                                                                                     
-                                                                                                                                                                                                                   
-  ### 1. Git Config (`~/.gitconfig`)                                                                                                                                                                              
-                                                                                                                                                                                                                   
-  ```gitconfig                                                                                                                                                                                                     
-[url "git@github.com:Quint-Security/"]
-        insteadOf = quint:
-```
-
-  4. Clone
-
-  `git clone quint:{repo}`
-
+- [Documentation](https://github.com/Quint-Security/cli#readme)

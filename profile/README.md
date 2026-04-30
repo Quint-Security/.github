@@ -1,48 +1,64 @@
 # Quint
 
-**Control what AI agents can do. Prove what they did.**
+**Behavioral security for AI agents.**
 
-AI agents call tools with no permissions, no audit trail, and no accountability. Quint fixes that — one config line, zero agent changes.
+One install. Every agent. Every action. Zero code changes.
 
-```
-AI Agent  →  Quint  →  MCP Server
-               ↑
-         enforce policy
-         sign every action
-         log to tamper-evident chain
-```
+---
 
-## Install
+## The gap
 
-```bash
-npm install -g @quint-security/cli
-quint keys generate && quint policy init
-```
+In July 2025, Replit's AI agent deleted a production database during a code freeze, then fabricated 4,000 fake users to cover its tracks. The proxy logs said it was editing files. The kernel knew it had run `DROP TABLE`.
 
-Then wrap any MCP server:
+That gap — between what an agent claims and what the OS actually sees — is where every AI agent breach lives. Existing tools stop at the API gateway. We don't.
 
-```json
-{ "command": "quint", "args": ["proxy", "--name", "my-server", "--", "my-mcp-server"] }
-```
+## The idea
 
-The agent doesn't know Quint exists. Every tool call is now policy-checked, signed, and logged.
+A single action is never the signal. The sequence is.
 
-## What you get
+"Read config" is fine. "Read config → open network socket → touch `~/.ssh`" is a breach in progress. Quint scores the whole story, not each call in isolation.
 
-- **Allow/deny policy** per server, per tool, with glob patterns (`write_*`, `Mechanic*`)
-- **Cryptographic audit trail** — every action signed with Ed25519, hash-chained in SQLite
-- **Independent verification** — export the log, hand it to anyone, they can verify what happened
-- **Fail-closed** — no policy match means deny
+## What Quint does
 
-## Repos
+- **OS-level interception** across macOS and Linux — every filesystem, process, and network call
+- **Behavioral baselines** per agent, per user, per fleet — deviation is the signal
+- **Real-time risk scoring** in under 10 milliseconds, at the edge
+- **Policy enforcement** — block, flag, or allow before the damage lands
+- **Tamper-proof audit** — Ed25519-signed, hash-chained records for every tool call
+- **Fleet management** — one control plane across every agent in your org
 
-- **[cli](https://github.com/Quint-Security/cli)** — proxy, audit log viewer, key management, policy engine (TypeScript)
-- **[proto](https://github.com/Quint-Security/proto)** — protobuf schema definitions shared across components
+## What Quint catches
 
-## Architecture
+- MCP tool poisoning
+- In-process subagent spawning — one session silently forking into many
+- Proxy/kernel divergence — agent says it called Bedrock, kernel says it read `~/.aws/credentials` first
+- Shadow agents running in dev environments IT never approved
 
-Two runtime dependencies: `better-sqlite3` + `commander`. Crypto is `node:crypto` built-in (Ed25519 + SHA-256). Works with any MCP-compatible agent — Claude Code, Cursor, Cline, Codex.
+## Works with
+
+Claude Code · Cursor · GitHub Copilot · Windsurf · Cline · Aider · Continue · Amazon Q Developer · Gemini CLI — and any agent running on macOS or Linux.
+
+## Compliance
+
+Maps to GDPR, HIPAA, SOC 2, PCI-DSS, EU AI Act, NIST AI RMF, and ISO 42001.
+
+## Privacy
+
+Edge-first by design. Raw agent conversations, tool arguments, and file contents never leave the endpoint. Only structured metadata — action type, risk score, timestamps — reaches the cloud.
 
 ## Links
 
-- [Documentation](https://github.com/Quint-Security/cli#readme)
+| | |
+|---|---|
+| Website | [quintai.dev](https://quintai.dev) |
+| Blog | [quintai.dev/blog](https://quintai.dev/blog) |
+| Platform | [quintai.dev/platform](https://quintai.dev/platform) |
+| Security & trust | [quintai.dev/security](https://quintai.dev/security) |
+| Book a demo | [quintai.dev/demo](https://quintai.dev/demo) |
+| LinkedIn | [linkedin.com/company/quint-security](https://linkedin.com/company/quint-security) |
+| X | [@quint_ai](https://x.com/quint_ai) |
+| Contact | hello@quintai.dev |
+
+---
+
+<sub>We audit the agent, not the developer.</sub>

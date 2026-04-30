@@ -56,7 +56,7 @@ Edge-first by design. Raw agent conversations, tool arguments, and file contents
 | Security & trust | [quintai.dev/security](https://quintai.dev/security) |
 | Book a demo | [quintai.dev/demo](https://quintai.dev/demo) |
 | LinkedIn | [linkedin.com/company/quint-security](https://linkedin.com/company/quint-security) |
-| X | [@quint_ai](https://x.com/quint_ai) |
+| X | [@QuintSecurity](https://x.com/QuintSecurity) |
 | Contact | hello@quintai.dev |
 
 ---
